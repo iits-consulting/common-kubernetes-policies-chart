@@ -1,0 +1,77 @@
+kyverno:
+  # This parameter controls if kyverno (dependency) should be installed or not.
+  # This option is by default on false but can be set to true.
+  # This makes it easier to use the chart in an umbrella chart.
+  install: false
+
+
+policies:
+
+  # settings for the policy which verifies if images from specific sources are signed.
+  imagesNeedsToBeSigned:
+
+    # Enables or disables this policy
+    # Only accepts true or false as values
+    enabled: true
+
+    # The name of the policy
+    name: image-needs-to-be-signed-policy
+
+    # This parameter handles how a policy violation is handled.
+    #
+    # Allowed values are:
+    # - enforce
+    # - audit
+    #
+    # If a policy is violated and the action is "enforce", then the ressource will not be allowed
+    # to be created. On the other  the "audit" action allows the ressource but reports this incident.
+    #
+    # For more information check out the documentation of Kyverno:
+    # https://kyverno.io/docs/writing-policies/validate/
+    validationAction: "enforce"
+
+    # A list of images and public key pairs.
+    #
+    # The image has to be a fully qualified path to the image(s).
+    # You need to prepend always the registry.
+    # The image(s) will be verified with the given public key.
+    #
+    # Example: "docker.io/iits/*" matches all images in the iits dockerhub.
+    #          Therefore, all images matching will be verified against the given key.
+    imagesAndPublicKeyPairs:
+      - image: "docker.io/iits/*"
+        key: |-
+          -----BEGIN PUBLIC KEY-----
+          MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEXzV8f2YUEmXF176k//uSmgEEZoKb
+          g2b7+PuoKjfaYVw3HTAE2Z4ak5ZNNq5HF8G1cRt3P713MyuIXiNKP6v2Nw==
+          -----END PUBLIC KEY-----
+
+  onlyFormSpecificDockerRegistry:
+    enabled: true
+    name: OnlyFormSpecificDockerRegistryConstraint
+    registryUrl: "http://harbor.docker.svc.cluster.local:9000"
+    # This parameter handles how a constraint violation is handled.
+    # Allowed values are:
+    # - deny (denies deployment if constrains are violated)
+    # - warn (allows deployment but prints a warning if constraints are violated)
+    # - dryrun (allows deployment if constraints are violated)
+    #
+    # For more information check out the gatekeeper docs
+    # https://open-policy-agent.github.io/gatekeeper/website/docs/violations
+    enforcement: "deny"
+
+    # This parameter handles on what the constraints are applied.
+    #
+    # This parameter is passed as is into the constraint.
+    # Please check out the gatekeeper docs
+    # https://open-policy-agent.github.io/gatekeeper/website/docs/howto/
+    #
+    # This default value matches against Deployments of the apps/v1
+    match: |
+      kinds:
+        - apiGroups:
+            - ""
+          kinds:
+            - "Pod"
+      excludedNamespaces:
+        - "kube-*"
