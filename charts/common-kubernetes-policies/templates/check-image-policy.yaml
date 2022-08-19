@@ -1,19 +1,20 @@
-{{ if .Values.policies.imagesNeedsToBeSigned }}
+{{ if .Values.policies.imagesNeedsToBeSigned.enabled }}
+{{ with .Values.policies.imagesNeedsToBeSigned }}
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
-  name: {{ .Values.policies.imagesNeedsToBeSigned.name }}
+  name: {{ .name }}
 spec:
-  validationFailureAction: {{ .Values.policies.imagesNeedsToBeSigned.validationAction }}
+  validationFailureAction: {{ .validationAction }}
   rules:
-    - name: "{{ .Values.policies.imagesNeedsToBeSigned.name }}-rule"
+    - name: "{{ .name }}-rule"
       match:
         any:
           - resources:
               kinds:
                 - Pod
       verifyImages:
-      {{ range .Values.policies.imagesNeedsToBeSigned.imagesAndPublicKeyPairs }}
+      {{ range .imagesAndPublicKeyPairs }}
         - imageReferences:
             - {{ .image }}
           attestors:
@@ -24,4 +25,6 @@ spec:
 {{ .key | indent 22 }}
 
       {{ end }}
+
+{{ end }}
 {{ end }}

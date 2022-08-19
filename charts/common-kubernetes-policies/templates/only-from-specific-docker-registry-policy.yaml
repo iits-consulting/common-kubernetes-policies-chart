@@ -1,0 +1,24 @@
+{{ if .Values.policies.onlyFormSpecificDockerRegistry.enabled }}
+{{ with .Values.policies.onlyFormSpecificDockerRegistry }}
+
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: {{ .name }}
+spec:
+  validationFailureAction: {{ .validationAction }}
+  rules:
+    - name: "{{ .name }}-rule"
+      match:
+        resources:
+          kinds:
+            - Pod
+      validate:
+        message: "Unknown image registry."
+        pattern:
+          spec:
+            containers:
+              - image: {{ join " | " .registryUrls }}
+
+{{ end }}
+{{ end }}

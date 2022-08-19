@@ -47,31 +47,30 @@ policies:
           -----END PUBLIC KEY-----
 
   onlyFormSpecificDockerRegistry:
-    enabled: true
-    name: OnlyFormSpecificDockerRegistryConstraint
-    registryUrl: "http://harbor.docker.svc.cluster.local:9000"
-    # This parameter handles how a constraint violation is handled.
-    # Allowed values are:
-    # - deny (denies deployment if constrains are violated)
-    # - warn (allows deployment but prints a warning if constraints are violated)
-    # - dryrun (allows deployment if constraints are violated)
-    #
-    # For more information check out the gatekeeper docs
-    # https://open-policy-agent.github.io/gatekeeper/website/docs/violations
-    enforcement: "deny"
 
-    # This parameter handles on what the constraints are applied.
+    # Enables or disables this policy
+    # Only accepts true or false as values
+    enabled: false
+
+    # The name of the policy
+    name: only-from-specific-docker-registry
+
+    # List of allowed registries
+    # Wildcards * and ? are allowed.
+    # For more information look into the kyverno documentation
+    registryUrls:
+      - "http://harbor.docker.svc.cluster.local:9000"
+      - "registry.gitlab.com/impresssol/*"
+
+    # This parameter handles how a policy violation is handled.
     #
-    # This parameter is passed as is into the constraint.
-    # Please check out the gatekeeper docs
-    # https://open-policy-agent.github.io/gatekeeper/website/docs/howto/
+    # Allowed values are:
+    # - enforce
+    # - audit
     #
-    # This default value matches against Deployments of the apps/v1
-    match: |
-      kinds:
-        - apiGroups:
-            - ""
-          kinds:
-            - "Pod"
-      excludedNamespaces:
-        - "kube-*"
+    # If a policy is violated and the action is "enforce", then the ressource will not be allowed
+    # to be created. On the other  the "audit" action allows the ressource but reports this incident.
+    #
+    # For more information check out the documentation of Kyverno:
+    # https://kyverno.io/docs/writing-policies/validate/
+    validationAction: "enforce"
