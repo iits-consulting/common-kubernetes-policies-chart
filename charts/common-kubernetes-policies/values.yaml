@@ -12,7 +12,7 @@ policies:
 
     # Enables or disables this policy
     # Only accepts true or false as values
-    enabled: true
+    enabled: false
 
     # The name of the policy
     name: image-needs-to-be-signed-policy
@@ -36,8 +36,8 @@ policies:
     # You need to prepend always the registry.
     # The image(s) will be verified with the given public key.
     #
-    # Example: "docker.io/iits/*" matches all images in the iits dockerhub.
-    #          Therefore, all images matching will be verified against the given key.
+    # Wildcards are supported.
+    # For more information check out: https://kyverno.io/docs/writing-policies/validate/#wildcards
     imagesAndPublicKeyPairs:
       - image: "docker.io/iits/*"
         key: |-
@@ -46,21 +46,43 @@ policies:
           g2b7+PuoKjfaYVw3HTAE2Z4ak5ZNNq5HF8G1cRt3P713MyuIXiNKP6v2Nw==
           -----END PUBLIC KEY-----
 
+    # A list of namespaces which are going to be excluded
+    #
+    # Wildcards are supported.
+    # For more information check out: https://kyverno.io/docs/writing-policies/validate/#wildcards
+    excludeNamespaces:
+      - "kube-*"
+      - "tests"
+
+    # These values control the tests.
+    # The tests for this policy will only be run if the relevant values are set.
+    test:
+
+      # A signed image to test if a signed image can be deployed to the cluster
+      signedImage: "iits/git-jq:1.2.0"
+
+      # An unsigned image with an excluded namespace to test if an unsigned image can be deployed to an excluded
+      # namespace in the cluster.
+      unsignedImage: "iits/git-jq:1.0.0"
+      excludeNamespace: "tests"
+
   onlyFormSpecificDockerRegistry:
 
     # Enables or disables this policy
     # Only accepts true or false as values
-    enabled: false
+    enabled: true
 
     # The name of the policy
     name: only-from-specific-docker-registry
 
     # List of allowed registries
-    # Wildcards * and ? are allowed.
-    # For more information look into the kyverno documentation
+    #
+    # Wildcards are supported.
+    # For more information check out: https://kyverno.io/docs/writing-policies/validate/#wildcards
     registryUrls:
-      - "http://harbor.docker.svc.cluster.local:9000"
+      - "harbor.docker.svc.cluster.local:9000/*"
       - "registry.gitlab.com/impresssol/*"
+      - "iits/*"
 
     # This parameter handles how a policy violation is handled.
     #
@@ -74,3 +96,23 @@ policies:
     # For more information check out the documentation of Kyverno:
     # https://kyverno.io/docs/writing-policies/validate/
     validationAction: "enforce"
+
+    # A list of namespaces which are going to be excluded
+    #
+    # Wildcards are supported.
+    # For more information check out: https://kyverno.io/docs/writing-policies/validate/#wildcards
+    excludeNamespaces:
+      - "kube-*"
+      - "tests"
+
+    # These values control the tests.
+    # The tests for this policy will only be run if the relevant values are set.
+    test:
+
+      # A signed image to test if a signed image can be deployed to the cluster
+      imageAllowedRegistry: "iits/git-jq:1.2.0"
+
+      # An unsigned image with an excluded namespace to test if an unsigned image can be deployed to an excluded
+      # namespace in the cluster.
+      imageForbiddenRegistry: "busybox:latest"
+      excludeNamespace: "tests"

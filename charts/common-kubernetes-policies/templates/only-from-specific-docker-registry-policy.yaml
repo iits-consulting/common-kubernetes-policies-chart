@@ -10,15 +10,25 @@ spec:
   rules:
     - name: "{{ .name }}-rule"
       match:
-        resources:
-          kinds:
-            - Pod
+        any:
+          - resources:
+              kinds:
+                - Pod
+
       validate:
         message: "Unknown image registry."
         pattern:
           spec:
             containers:
-              - image: {{ join " | " .registryUrls }}
+              - image: {{ join " | " .registryUrls | quote}}
+
+      exclude:
+        any:
+          - resources:
+              namespaces:
+              {{- range .excludeNamespaces }}
+                - {{ . }}
+              {{- end }}
 
 {{ end }}
 {{ end }}

@@ -13,8 +13,16 @@ spec:
           - resources:
               kinds:
                 - Pod
+
+      exclude:
+        any:
+          - resources:
+              namespaces:
+              {{- range .excludeNamespaces }}
+                - {{ . }}
+              {{- end }}
       verifyImages:
-      {{ range .imagesAndPublicKeyPairs }}
+      {{- range .imagesAndPublicKeyPairs }}
         - imageReferences:
             - {{ .image }}
           attestors:
@@ -24,7 +32,7 @@ spec:
                     publicKeys: |-
 {{ .key | indent 22 }}
 
-      {{ end }}
+      {{- end }}
 
 {{ end }}
 {{ end }}

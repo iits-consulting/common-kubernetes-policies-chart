@@ -1,0 +1,27 @@
+{{ with .Values.policies.imagesNeedsToBeSigned }}
+{{ if (and .enabled .test.unsignedImage .test.excludeNamespace) }}
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: "{{ .test.excludeNamespace }}"
+  annotations:
+    "helm.sh/hook": test
+    "helm.sh/hook-delete-policy": hook-succeeded
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "unsigned-image-allowed-in-excluded-namespace"
+  annotations:
+    "helm.sh/hook": test
+    "helm.sh/hook-delete-policy": hook-succeeded
+  namespace: "{{ .test.excludeNamespace }}"
+spec:
+  containers:
+    - name: signed-image
+      image: "{{ .test.unsignedImage }}"
+  restartPolicy: Never
+
+{{ end }}
+{{ end }}

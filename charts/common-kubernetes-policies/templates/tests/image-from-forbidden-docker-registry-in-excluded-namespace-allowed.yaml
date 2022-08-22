@@ -1,0 +1,29 @@
+{{ with .Values.policies.onlyFormSpecificDockerRegistry }}
+{{ if (and .enabled .test.imageAllowedRegistry) }}
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: "{{ .test.excludeNamespace }}"
+  annotations:
+    "helm.sh/hook": test
+    "helm.sh/hook-delete-policy": hook-succeeded
+---
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "forbidden-docker-registry-in-excluded-namespace"
+  namespace: "{{.excludeNamespaces}}"
+  annotations:
+    "helm.sh/hook": test
+    helm.sh/hook-delete-policy: hook-succeeded
+
+spec:
+  containers:
+    - name: "forbidden-docker-registry-in-excluded-namespace"
+      image: "{{ .test.imageForbiddenRegistry }}"
+  restartPolicy: Never
+
+{{ end }}
+{{ end }}
