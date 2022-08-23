@@ -1,5 +1,6 @@
-{{ if .Values.policies.imagesNeedsToBeSigned.enabled }}
-{{ with .Values.policies.imagesNeedsToBeSigned }}
+{{ with .Values.policies.disallowUnsignedImages }}
+{{ if .enabled }}
+
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
@@ -21,6 +22,7 @@ spec:
               {{- range .excludeNamespaces }}
                 - {{ . }}
               {{- end }}
+
       verifyImages:
       {{- range .imagesAndPublicKeyPairs }}
         - imageReferences:

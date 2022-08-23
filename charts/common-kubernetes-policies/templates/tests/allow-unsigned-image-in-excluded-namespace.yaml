@@ -1,4 +1,4 @@
-{{ with .Values.policies.imagesNeedsToBeSigned }}
+{{ with .Values.policies.disallowUnsignedImages }}
 {{ if (and .enabled .test.unsignedImage .test.excludeNamespace) }}
 
 apiVersion: v1
@@ -12,7 +12,7 @@ metadata:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: "unsigned-image-allowed-in-excluded-namespace"
+  name: "allow-unsigned-image-in-excluded-namespace"
   annotations:
     "helm.sh/hook": test
     "helm.sh/hook-delete-policy": hook-succeeded

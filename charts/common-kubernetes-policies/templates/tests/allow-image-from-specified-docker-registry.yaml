@@ -1,10 +1,10 @@
-{{ with .Values.policies.onlyFormSpecificDockerRegistry }}
+{{ with .Values.policies.disallowUnspecifiedDockerRegistries }}
 {{ if (and .enabled .test.imageAllowedRegistry) }}
 
 apiVersion: v1
 kind: Pod
 metadata:
-  name: "allowed-docker-registry"
+  name: "allow-image-from-specified-docker-registry"
   annotations:
     "helm.sh/hook": test
     helm.sh/hook-delete-policy: hook-succeeded

@@ -4,18 +4,21 @@ kyverno:
   # This makes it easier to use the chart in an umbrella chart.
   install: false
 
+kyverno-policies:
+  install: true
+  podSecurityStandard: "baseline"
 
 policies:
 
   # settings for the policy which verifies if images from specific sources are signed.
-  imagesNeedsToBeSigned:
+  disallowUnsignedImages:
 
     # Enables or disables this policy
     # Only accepts true or false as values
     enabled: false
 
     # The name of the policy
-    name: image-needs-to-be-signed-policy
+    name: disallow-unsigned-images
 
     # This parameter handles how a policy violation is handled.
     #
@@ -66,14 +69,14 @@ policies:
       unsignedImage: "iits/git-jq:1.0.0"
       excludeNamespace: "tests"
 
-  onlyFormSpecificDockerRegistry:
+  disallowUnspecifiedDockerRegistries:
 
     # Enables or disables this policy
     # Only accepts true or false as values
     enabled: true
 
     # The name of the policy
-    name: only-from-specific-docker-registry
+    name: disallow-unspecified-docker-registries
 
     # List of allowed registries
     #

@@ -1,4 +1,4 @@
-{{ with .Values.policies.onlyFormSpecificDockerRegistry }}
+{{ with .Values.policies.disallowUnspecifiedDockerRegistries }}
 {{ if (and .enabled .test.imageAllowedRegistry) }}
 
 apiVersion: v1
@@ -13,7 +13,7 @@ metadata:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: "forbidden-docker-registry-in-excluded-namespace"
+  name: "allow-image-from-unspecified-docker-registry-in-exluded-namespace"
   namespace: "{{.excludeNamespaces}}"
   annotations:
     "helm.sh/hook": test

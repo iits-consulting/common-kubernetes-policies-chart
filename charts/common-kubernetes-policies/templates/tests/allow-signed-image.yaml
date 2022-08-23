@@ -1,10 +1,10 @@
-{{ with .Values.policies.imagesNeedsToBeSigned }}
+{{ with .Values.policies.disallowUnsignedImages }}
 {{ if (and .enabled .test.signedImage) }}
 
 apiVersion: v1
 kind: Pod
 metadata:
-  name: "signed-image-allowed"
+  name: "allow-signed-image"
   annotations:
     "helm.sh/hook": test
     helm.sh/hook-delete-policy: hook-succeeded
