@@ -26,7 +26,7 @@ metadata:
       Note that this mutates Pods directly and not their controllers. It can be changed if desired but
       if so may need to not match on Pods.
 spec:
-  background: false
+  background: {{.background}}
   rules:
     - name: replace-image-registry-pod-containers
       preconditions:
