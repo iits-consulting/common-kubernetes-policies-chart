@@ -1,4 +1,4 @@
-{{ with .Values.policies.disallowUnspecifiedDockerRegistries }}
+{{ with .Values.customPolicies.disallowUnspecifiedDockerRegistries }}
 {{ if .enabled }}
 
 apiVersion: kyverno.io/v1

@@ -1,4 +1,4 @@
-{{ with .Values.policies.disallowUnsignedImages }}
+{{ with .Values.customPolicies.disallowUnsignedImages }}
 {{ if .enabled }}
 
 apiVersion: kyverno.io/v1
