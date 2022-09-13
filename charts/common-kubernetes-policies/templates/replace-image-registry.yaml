@@ -32,13 +32,13 @@ spec:
       preconditions:
         all:
           {{- range $excludeRegistry := .excludeRegistries}}
-          - key: "{{`{{request.object.spec.containers[0].image}}`}}"
+          - key: "{{`{{request.object.spec.containers[0].image || ''}}`}}"
             operator: NotEquals
             value: "{{$excludeRegistry}}"
-          - key: "{{`{{request.object.spec.containers[1].image}}`}}"
+          - key: "{{`{{request.object.spec.containers[1].image || ''}}`}}"
             operator: NotEquals
             value: "{{$excludeRegistry}}"
-          - key: "{{`{{request.object.spec.containers[2].image}}`}}"
+          - key: "{{`{{request.object.spec.containers[2].image || ''}}`}}"
             operator: NotEquals
             value: "{{$excludeRegistry}}"
           {{- end }}
