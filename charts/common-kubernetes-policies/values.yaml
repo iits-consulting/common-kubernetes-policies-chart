@@ -12,10 +12,15 @@ customPolicies:
   #replace all registries and force to go through a specific one. Often functions as a pull through cache proxy
   replaceImageRegistry:
     enabled: true
+
     # source regex for matching it need to be golang compatible
     sourceRegex: "'.*(.*)/'"
+
     # the target repository the trailing / is mandatory
     target: "mysecure-registry/common-signed-docker-images/"
+
+    validationFailureAction: "enforce"
+
     #excludes images from the replacement wildcard * is supported
     excludeRegistries:
       - "docker.io/something/*"

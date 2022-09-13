@@ -27,6 +27,7 @@ metadata:
       if so may need to not match on Pods.
 spec:
   background: {{.background}}
+  validationFailureAction: {{.validationFailureAction}}
   rules:
     - name: replace-image-registry-pod-containers
       preconditions:
