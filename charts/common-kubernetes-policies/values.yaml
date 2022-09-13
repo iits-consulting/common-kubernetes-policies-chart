@@ -18,7 +18,7 @@ customPolicies:
     target: "mysecure-registry/common-signed-docker-images/"
     #excludes images from the replacement wildcard * is supported
     excludeRegistries:
-      - "docker.io/something/"
+      - "docker.io/something/*"
 
 
   # settings for the policy which verifies if images from specific sources are signed.
@@ -53,7 +53,7 @@ customPolicies:
     # Wildcards are supported.
     # For more information check out: https://kyverno.io/docs/writing-policies/validate/#wildcards
     imagesAndPublicKeyPairs:
-      - image: "docker.io/iits/*"
+      - image: "*"
         key: |-
           -----BEGIN PUBLIC KEY-----
           MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEXzV8f2YUEmXF176k//uSmgEEZoKb
