@@ -26,7 +26,7 @@ spec:
       verifyImages:
       {{- range .imagesAndPublicKeyPairs }}
         - imageReferences:
-            - {{ .image }}
+            - {{ .image | quote}}
           attestors:
             - count: 1
               entries:
