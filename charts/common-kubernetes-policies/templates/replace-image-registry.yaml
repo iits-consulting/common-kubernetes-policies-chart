@@ -29,7 +29,7 @@ spec:
   background: {{.background}}
   validationFailureAction: {{.validationFailureAction}}
   rules:
-    - name: replace-image-registry-pod-containers
+    - name: {{ .name }}
       preconditions:
         all:
           {{- range $excludeRegistry := .excludeRegistries}}
@@ -56,7 +56,7 @@ spec:
                 containers:
                   - name: "{{`{{ element.name }}`}}"
                     image: "{{`{{ regex_replace_all_literal(`}}{{.sourceRegex}}, {{`'{{element.image}}', `}}'{{.target}}'{{` )}}`}}"
-    - name: replace-image-registry-pod-initcontainers
+    - name: {{ .name }}-init-containers
       match:
         any:
           - resources:
@@ -75,5 +75,9 @@ spec:
                 initContainers:
                   - name: "{{`{{ element.name }}`}}"
                     image: "{{`{{ regex_replace_all_literal(`}}{{.sourceRegex}}, {{`'{{element.image}}', `}}'{{.target}}'{{` )}}`}}"
+          - patchStrategicMerge:
+              metadata:
+                labels:
+                  policy-{{ .name }}-passed: "true"
 {{ end }}
 {{ end }}

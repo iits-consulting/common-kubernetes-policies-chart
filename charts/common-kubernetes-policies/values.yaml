@@ -13,6 +13,12 @@ customPolicies:
   replaceImageRegistry:
     enabled: true
 
+    #Check also already existing containers see also https://kyverno.io/docs/writing-policies/background/
+    background: true
+
+    # The name of the policy
+    name: replace-image-registry
+
     # source regex for matching it need to be golang compatible
     sourceRegex: "'.*(.*)/'"
 
@@ -25,15 +31,15 @@ customPolicies:
     excludeRegistries:
       - "docker.io/something/*"
 
-    #Check also already existing containers see also https://kyverno.io/docs/writing-policies/background/
-    background: true
-
   # settings for the policy which verifies if images from specific sources are signed.
   disallowUnsignedImages:
 
     # Enables or disables this policy
     # Only accepts true or false as values
     enabled: true
+
+    #Check also already existing containers see also https://kyverno.io/docs/writing-policies/background/
+    background: true
 
     # The name of the policy
     name: disallow-unsigned-images
@@ -79,6 +85,9 @@ customPolicies:
     # Enables or disables this policy
     # Only accepts true or false as values
     enabled: true
+
+    #Check also already existing containers see also https://kyverno.io/docs/writing-policies/background/
+    background: true
 
     # The name of the policy
     name: disallow-unspecified-docker-registries

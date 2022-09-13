@@ -7,6 +7,7 @@ metadata:
   name: {{ .name }}
 spec:
   validationFailureAction: {{ .validationAction }}
+  background: {{.background}}
   rules:
     - name: "{{ .name }}-rule"
       match:
@@ -14,7 +15,12 @@ spec:
           - resources:
               kinds:
                 - Pod
-
+      preconditions:
+        any:
+          - key: |-
+                {{`{{ request.object.metadata.labels.policy-`}}{{$.Values.customPolicies.replaceImageRegistry.name }}{{`-passed || '' }}`}}
+            operator: Equals
+            value: "true"
       exclude:
         any:
           - resources:
