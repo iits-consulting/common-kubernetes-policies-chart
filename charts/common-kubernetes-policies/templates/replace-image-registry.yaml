@@ -75,9 +75,5 @@ spec:
                 initContainers:
                   - name: "{{`{{ element.name }}`}}"
                     image: "{{`{{ regex_replace_all_literal(`}}{{.sourceRegex}}, {{`'{{element.image}}', `}}'{{.target}}'{{` )}}`}}"
-          - patchStrategicMerge:
-              metadata:
-                labels:
-                  policy-{{ .name }}-passed: "true"
 {{ end }}
 {{ end }}

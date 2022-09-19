@@ -1,6 +1,5 @@
 {{ with .Values.customPolicies.disallowUnsignedImages }}
 {{ if .enabled }}
-
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
@@ -15,12 +14,6 @@ spec:
           - resources:
               kinds:
                 - Pod
-      preconditions:
-        any:
-          - key: |-
-                {{`{{ request.object.metadata.labels.policy-`}}{{$.Values.customPolicies.replaceImageRegistry.name }}{{`-passed || '' }}`}}
-            operator: Equals
-            value: "true"
       exclude:
         any:
           - resources:
@@ -39,8 +32,6 @@ spec:
                 - keys:
                     publicKeys: |-
 {{ .key | indent 22 }}
-
       {{- end }}
-
 {{ end }}
 {{ end }}
