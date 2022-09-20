@@ -76,6 +76,7 @@ spec:
               kinds:
                 - CronJob
                 - Job
+                - DaemonSet
       mutate:
         foreach:
           - list: "request.object.spec.template.spec.containers"
