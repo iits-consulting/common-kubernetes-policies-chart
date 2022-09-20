@@ -56,6 +56,36 @@ spec:
                 containers:
                   - name: "{{`{{ element.name }}`}}"
                     image: "{{`{{ regex_replace_all_literal(`}}{{.sourceRegex}}, {{`'{{element.image}}', `}}'{{.target}}'{{` )}}`}}"
+    - name: {{ .name }}-jobs
+      preconditions:
+        all:
+          {{- range $excludeRegistry := .excludeRegistries}}
+          - key: "{{`{{request.object.spec.containers[0].image || ''}}`}}"
+            operator: NotEquals
+            value: "{{$excludeRegistry}}"
+          - key: "{{`{{request.object.spec.containers[1].image || ''}}`}}"
+            operator: NotEquals
+            value: "{{$excludeRegistry}}"
+          - key: "{{`{{request.object.spec.containers[2].image || ''}}`}}"
+            operator: NotEquals
+            value: "{{$excludeRegistry}}"
+          {{- end }}
+      match:
+        any:
+          - resources:
+              kinds:
+                - CronJob
+                - Job
+      mutate:
+        foreach:
+          - list: "request.object.spec.template.spec.containers"
+            patchStrategicMerge:
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: "{{`{{ element.name }}`}}"
+                        image: "{{`{{ regex_replace_all_literal(`}}{{.sourceRegex}}, {{`'{{element.image}}', `}}'{{.target}}'{{` )}}`}}"
     - name: {{ .name }}-init-containers
       match:
         any:

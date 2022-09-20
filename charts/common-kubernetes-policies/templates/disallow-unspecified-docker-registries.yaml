@@ -15,14 +15,12 @@ spec:
           - resources:
               kinds:
                 - Pod
-
       validate:
         message: "Unknown image registry."
         pattern:
           spec:
             containers:
               - image: {{ join " | " .registryUrls | quote}}
-
       exclude:
         any:
           - resources:
