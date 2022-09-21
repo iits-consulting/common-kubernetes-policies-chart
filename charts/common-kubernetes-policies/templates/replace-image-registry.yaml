@@ -56,17 +56,47 @@ spec:
                 containers:
                   - name: "{{`{{ element.name }}`}}"
                     image: "{{`{{ regex_replace_all_literal(`}}{{.sourceRegex}}, {{`'{{element.image}}', `}}'{{.target}}'{{` )}}`}}"
-    - name: {{ .name }}-jobs
+    - name: {{ .name }}-other
       preconditions:
         all:
           {{- range $excludeRegistry := .excludeRegistries}}
-          - key: "{{`{{request.object.spec.containers[0].image || ''}}`}}"
+          - key: "{{`{{request.object.spec.template.spec.containers[0].image || ''}}`}}"
             operator: NotEquals
             value: "{{$excludeRegistry}}"
-          - key: "{{`{{request.object.spec.containers[1].image || ''}}`}}"
+          - key: "{{`{{request.object.spec.template.spec.containers[1].image || ''}}`}}"
             operator: NotEquals
             value: "{{$excludeRegistry}}"
-          - key: "{{`{{request.object.spec.containers[2].image || ''}}`}}"
+          - key: "{{`{{request.object.spec.template.spec.containers[2].image || ''}}`}}"
+            operator: NotEquals
+            value: "{{$excludeRegistry}}"
+          {{- end }}
+      match:
+        any:
+          - resources:
+              kinds:
+                - Job
+                - DaemonSet
+      mutate:
+        foreach:
+          - list: "request.object.spec.template.spec.containers"
+            patchStrategicMerge:
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: "{{`{{ element.name }}`}}"
+                        image: "{{`{{ regex_replace_all_literal(`}}{{.sourceRegex}}, {{`'{{element.image}}', `}}'{{.target}}'{{` )}}`}}"
+    - name: {{ .name }}-cronjobs
+      preconditions:
+        all:
+          {{- range $excludeRegistry := .excludeRegistries}}
+          - key: "{{`{{request.object.spec.jobTemplate.spec.template.spec.containers[0].image || ''}}`}}"
+            operator: NotEquals
+            value: "{{$excludeRegistry}}"
+          - key: "{{`{{request.object.spec.jobTemplate.spec.template.spec.containers[1].image || ''}}`}}"
+            operator: NotEquals
+            value: "{{$excludeRegistry}}"
+          - key: "{{`{{request.object.spec.jobTemplate.spec.template.spec.containers[2].image || ''}}`}}"
             operator: NotEquals
             value: "{{$excludeRegistry}}"
           {{- end }}
@@ -75,11 +105,9 @@ spec:
           - resources:
               kinds:
                 - CronJob
-                - Job
-                - DaemonSet
       mutate:
         foreach:
-          - list: "request.object.spec.template.spec.containers"
+          - list: "request.object.spec.jobTemplate.spec.template.spec.containers"
             patchStrategicMerge:
               spec:
                 template:
