@@ -6,7 +6,8 @@ metadata:
   name: replace-image-registry
   annotations:
     policies.kyverno.io/title: Replace Image Registry
-    policies.kyverno.io/category: ImageSubstitution
+    pod-policies.kyverno.io/autogen-controllers: none
+    policies.kyverno.io/category: DockerImage
     policies.kyverno.io/severity: high
     policies.kyverno.io/subject: Pod
     policies.kyverno.io/minversion: 1.6.0
