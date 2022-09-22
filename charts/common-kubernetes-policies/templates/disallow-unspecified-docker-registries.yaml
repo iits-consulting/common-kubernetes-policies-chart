@@ -16,7 +16,7 @@ spec:
               kinds:
                 - Pod
       validate:
-        message: "Unknown image registry."
+        message: "Unknown image registries. image={{`{{ request.object.spec.containers[*].image }}`}},podName={{`{{ request.object.spec.containers[*].name }}`}}"
         pattern:
           spec:
             containers:

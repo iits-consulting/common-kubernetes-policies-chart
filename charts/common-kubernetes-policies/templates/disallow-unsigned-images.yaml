@@ -21,7 +21,6 @@ spec:
               {{- range .excludeNamespaces }}
                 - {{ . }}
               {{- end }}
-
       verifyImages:
       {{- range .imagesAndPublicKeyPairs }}
         - imageReferences:
