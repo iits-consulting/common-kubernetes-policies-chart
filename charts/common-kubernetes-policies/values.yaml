@@ -25,6 +25,8 @@ customPolicies:
     #Check also already existing containers see also https://kyverno.io/docs/writing-policies/background/
     background: true
 
+    autogenControllers: none
+
     # The name of the policy
     name: replace-image-registry
 
@@ -49,6 +51,8 @@ customPolicies:
 
     #Check also already existing containers see also https://kyverno.io/docs/writing-policies/background/
     background: true
+
+    autogenControllers: none
 
     # The name of the policy
     name: disallow-unsigned-images
@@ -97,6 +101,8 @@ customPolicies:
 
     #Check also already existing containers see also https://kyverno.io/docs/writing-policies/background/
     background: true
+
+    autogenControllers: none
 
     # The name of the policy
     name: disallow-unspecified-docker-registries
