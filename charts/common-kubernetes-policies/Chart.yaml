@@ -9,9 +9,16 @@ dependencies:
     condition: kyverno.install
 
   - name: "kyverno-policies"
+    alias: kyvernoPolicies
     repository: "https://kyverno.github.io/kyverno/"
     version: 2.5.2
-    condition: kyverno-policies.install
+    condition: kyvernoPolicies.install
+
+  - name: "policy-reporter"
+    alias: kyvernoPolicyReporter
+    repository: "https://kyverno.github.io/policy-reporter"
+    version: 2.13.0
+    condition: kyvernoPolicyReporter.install
 
 # A chart can be either an 'application' or a 'library' chart.
 #
@@ -26,4 +33,4 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.2.12
+version: 0.3.0
