@@ -4,17 +4,7 @@ kyverno:
   # This makes it easier to use the chart in an umbrella chart.
   install: true
 
-kyvernoPolicyReporter:
-  install: true
-  kyvernoPlugin:
-    enabled: true
-  ui:
-    enabled: true
-    plugins:
-      kyverno: true
-
-
-kyvernoPolicies:
+kyverno-policies:
   install: true
   podSecurityStandard: "baseline"
 
