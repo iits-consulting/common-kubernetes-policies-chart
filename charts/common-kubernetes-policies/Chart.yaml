@@ -13,6 +13,9 @@ dependencies:
     version: 2.5.2
     condition: kyverno-policies.install
 
+  - name: "policy-reporter"
+    repository: "https://kyverno.github.io/policy-reporter"
+    version: 2.13.0
 # A chart can be either an 'application' or a 'library' chart.
 #
 # Application charts are a collection of templates that can be packaged into versioned archives
@@ -26,4 +29,5 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.2.12
+version: 0.3.0
+
