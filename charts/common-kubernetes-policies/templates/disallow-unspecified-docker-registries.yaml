@@ -32,13 +32,6 @@ spec:
       exclude:
         any:
           - resources:
-              kinds:
-                - DaemonSet
-                - Deployment
-                - Job
-                - StatefulSet
-                - CronJob
-          - resources:
               namespaces:
               {{- range .excludeNamespaces }}
                 - {{ . }}
