@@ -8,7 +8,7 @@ spec:
     - {{ .Values.route.entrypoint }}
   routes:
     - kind: Rule
-      match: {{.Values.route.hostPrefixRegex}} && PathPrefix(`/policies`,`_nuxt`)
+      match: {{.Values.route.hostPrefixRegex}} && PathPrefix(`/policies`,`/_nuxt`)
       middlewares:
         - name: strip-prefix-{{ .Release.Name }}
           namespace: {{.Release.Namespace}}
