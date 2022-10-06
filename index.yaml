@@ -2,6 +2,27 @@ apiVersion: v1
 entries:
   common-kubernetes-policies:
   - apiVersion: v2
+    created: "2022-10-06T10:17:36.900837275Z"
+    dependencies:
+    - condition: kyverno.install
+      name: kyverno
+      repository: https://kyverno.github.io/kyverno/
+      version: v2.5.3
+    - condition: kyverno-policies.install
+      name: kyverno-policies
+      repository: https://kyverno.github.io/kyverno/
+      version: v2.5.3
+    - name: policy-reporter
+      repository: https://kyverno.github.io/policy-reporter
+      version: 2.13.0
+    description: A Helm chart for Kubernetes
+    digest: f7aa1694c8ce795bee19357cb27e13ba66d9816cecc83627bbf0b7067a8b5621
+    name: common-kubernetes-policies
+    type: application
+    urls:
+    - https://github.com/iits-consulting/common-kubernetes-policies-chart/releases/download/common-kubernetes-policies-0.3.11/common-kubernetes-policies-0.3.11.tgz
+    version: 0.3.11
+  - apiVersion: v2
     created: "2022-09-28T08:30:50.009167599Z"
     dependencies:
     - condition: kyverno.install
@@ -470,4 +491,4 @@ entries:
     urls:
     - https://github.com/iits-consulting/common-kubernetes-policies-chart/releases/download/common-kubernetes-policies-0.1.0/common-kubernetes-policies-0.1.0.tgz
     version: 0.1.0
-generated: "2022-09-28T08:30:50.009417603Z"
+generated: "2022-10-06T10:17:36.901064181Z"
