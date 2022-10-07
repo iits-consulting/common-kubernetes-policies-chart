@@ -27,16 +27,46 @@ spec:
   background: {{.background}}
   validationFailureAction: {{.validationFailureAction}}
   rules:
-    - name: {{ .name }}
+    - name: {{ .name }}-0
       preconditions:
         all:
           {{- range $excludeRegistry := .excludeRegistries}}
           - key: "{{`{{request.object.spec.containers[0].image || ''}}`}}"
             operator: NotEquals
             value: "{{$excludeRegistry}}"
+          {{- end }}
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      mutate:
+        patchesJson6902: |-
+          - path: /spec/containers/0/image
+            op: replace
+            value: "{{`{{ regex_replace_all_literal(`}}{{.sourceRegex}}, {{`'{{request.object.spec.containers[0].image}}', `}}'{{.target}}'{{` )}}`}}"
+    - name: {{ .name }}-1
+      preconditions:
+        all:
+          {{- range $excludeRegistry := .excludeRegistries}}
           - key: "{{`{{request.object.spec.containers[1].image || ''}}`}}"
             operator: NotEquals
             value: "{{$excludeRegistry}}"
+          {{- end }}
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      mutate:
+        patchesJson6902: |-
+          - path: /spec/containers/1/image
+            op: replace
+            value: "{{`{{ regex_replace_all_literal(`}}{{.sourceRegex}}, {{`'{{request.object.spec.containers[1].image}}', `}}'{{.target}}'{{` )}}`}}"
+    - name: {{ .name }}-2
+      preconditions:
+        all:
+          {{- range $excludeRegistry := .excludeRegistries}}
           - key: "{{`{{request.object.spec.containers[2].image || ''}}`}}"
             operator: NotEquals
             value: "{{$excludeRegistry}}"
@@ -47,13 +77,10 @@ spec:
               kinds:
                 - Pod
       mutate:
-        foreach:
-          - list: "request.object.spec.containers"
-            patchStrategicMerge:
-              spec:
-                containers:
-                  - name: "{{`{{ element.name }}`}}"
-                    image: "{{`{{ regex_replace_all_literal(`}}{{.sourceRegex}}, {{`'{{element.image}}', `}}'{{.target}}'{{` )}}`}}"
+        patchesJson6902: |-
+          - path: /spec/containers/2/image
+            op: replace
+            value: "{{`{{ regex_replace_all_literal(`}}{{.sourceRegex}}, {{`'{{request.object.spec.containers[2].image}}', `}}'{{.target}}'{{` )}}`}}"
     - name: {{ .name }}-init-containers
       match:
         any:
