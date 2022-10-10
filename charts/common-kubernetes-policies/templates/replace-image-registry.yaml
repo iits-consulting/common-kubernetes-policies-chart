@@ -1,9 +1,10 @@
-{{ with .Values.customPolicies.replaceImageRegistry }}
-{{ if .enabled }}
+{{- if .Values.customPolicies.replaceImageRegistry.enabled }}
+{{- range $podNumber, $e := until 3}}
+{{- with $.Values.customPolicies.replaceImageRegistry }}
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
-  name: replace-image-registry
+  name: replace-image-registry-{{ $podNumber }}
   annotations:
     policies.kyverno.io/title: Replace Image Registry
     pod-policies.kyverno.io/autogen-controllers: {{ .autogenControllers }}
@@ -27,11 +28,11 @@ spec:
   background: {{.background}}
   validationFailureAction: {{.validationFailureAction}}
   rules:
-    - name: {{ .name }}-0
+    - name: {{ .name }}
       preconditions:
         all:
           {{- range $excludeRegistry := .excludeRegistries}}
-          - key: "{{`{{request.object.spec.containers[0].image || ''}}`}}"
+          - key: "{{`{{request.object.spec.containers[`}}{{$podNumber}}{{`].image || ''}}`}}"
             operator: NotEquals
             value: "{{$excludeRegistry}}"
           {{- end }}
@@ -42,63 +43,62 @@ spec:
                 - Pod
       mutate:
         patchesJson6902: |-
-          - path: /spec/containers/0/image
+          - path: /spec/containers/{{$podNumber}}/image
             op: replace
-            value: "{{`{{ regex_replace_all_literal(`}}{{.sourceRegex}}, {{`'{{request.object.spec.containers[0].image}}', `}}'{{.target}}'{{` )}}`}}"
-    - name: {{ .name }}-1
-      preconditions:
-        all:
-          {{- range $excludeRegistry := .excludeRegistries}}
-          - key: "{{`{{request.object.spec.containers[1].image || ''}}`}}"
-            operator: NotEquals
-            value: "{{$excludeRegistry}}"
-          {{- end }}
-      match:
-        any:
-          - resources:
-              kinds:
-                - Pod
-      mutate:
-        patchesJson6902: |-
-          - path: /spec/containers/1/image
-            op: replace
-            value: "{{`{{ regex_replace_all_literal(`}}{{.sourceRegex}}, {{`'{{request.object.spec.containers[1].image}}', `}}'{{.target}}'{{` )}}`}}"
-    - name: {{ .name }}-2
-      preconditions:
-        all:
-          {{- range $excludeRegistry := .excludeRegistries}}
-          - key: "{{`{{request.object.spec.containers[2].image || ''}}`}}"
-            operator: NotEquals
-            value: "{{$excludeRegistry}}"
-          {{- end }}
-      match:
-        any:
-          - resources:
-              kinds:
-                - Pod
-      mutate:
-        patchesJson6902: |-
-          - path: /spec/containers/2/image
-            op: replace
-            value: "{{`{{ regex_replace_all_literal(`}}{{.sourceRegex}}, {{`'{{request.object.spec.containers[2].image}}', `}}'{{.target}}'{{` )}}`}}"
-    - name: {{ .name }}-init-containers
-      match:
-        any:
-          - resources:
-              kinds:
-                - Pod
-      preconditions:
-        all:
-          - key: "{{`{{ request.object.spec.initContainers[] || `}}`[]`{{` | length(@) }}`}}"
-            operator: GreaterThanOrEquals
-            value: 1
-      mutate:
-        foreach:
-          - list: "request.object.spec.initContainers"
-            patchStrategicMerge:
-              spec:
-                initContainers:
-                  - name: "{{`{{ element.name }}`}}"
-                    image: "{{`{{ regex_replace_all_literal(`}}{{.sourceRegex}}, {{`'{{element.image}}', `}}'{{.target}}'{{` )}}`}}"
-{{ end }}
-{{ end }}
+            value: "{{`{{ regex_replace_all_literal(`}}{{.sourceRegex}}, {{`'{{request.object.spec.containers[`}}{{$podNumber}}{{`].image}}', `}}'{{.target}}'{{` )}}`}}"
+
+---
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{- if .Values.customPolicies.replaceImageRegistry.enabled }}
+{{- with $.Values.customPolicies.replaceImageRegistry }}
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: replace-image-registry-init-container
+  annotations:
+    policies.kyverno.io/title: Replace Image Registry
+    pod-policies.kyverno.io/autogen-controllers: {{ .autogenControllers }}
+    policies.kyverno.io/category: DockerImage
+    policies.kyverno.io/severity: high
+    policies.kyverno.io/subject: Pod
+    policies.kyverno.io/minversion: 1.6.0
+    policies.kyverno.io/description: >-
+      We rewrite every third party docker registry to `{{.target}}`.
+      If the image does not exist there it can not be deployed.
+
+      Since we have also business apps you can also exclude registries from the replacement.
+
+      The pulls are directed to a approved registry. In some cases, those registries may function as
+      pull-through proxies and can fetch the image if not cached.
+      This policy mutates all images either in the form 'image:tag' or
+      'registry.corp.com/image:tag' to be `{{.target}}image:tag`.
+      Note that this mutates Pods directly and not their controllers. It can be changed if desired but
+      if so may need to not match on Pods.
+spec:
+  background: {{.background}}
+  validationFailureAction: {{.validationFailureAction}}
+  rules:
+      - name: {{ .name }}-init-containers
+        match:
+          any:
+            - resources:
+                kinds:
+                  - Pod
+        preconditions:
+          all:
+            - key: "{{`{{ request.object.spec.initContainers[] || `}}`[]`{{` | length(@) }}`}}"
+              operator: GreaterThanOrEquals
+              value: 1
+        mutate:
+          foreach:
+            - list: "request.object.spec.initContainers"
+              patchStrategicMerge:
+                spec:
+                  initContainers:
+                    - name: "{{`{{ element.name }}`}}"
+                      image: "{{`{{ regex_replace_all_literal(`}}{{.sourceRegex}}, {{`'{{element.image}}', `}}'{{.target}}'{{` )}}`}}"
+{{- end }}
+{{- end }}
