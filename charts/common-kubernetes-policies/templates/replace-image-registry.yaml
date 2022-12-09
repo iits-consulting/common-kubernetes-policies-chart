@@ -28,13 +28,6 @@ spec:
   validationFailureAction: {{.validationFailureAction}}
   rules:
     - name: {{ .name }}
-      preconditions:
-        all:
-          {{- range $excludeRegistry := .excludeRegistries}}
-          - key: "{{`{{request.object.spec.template.spec.containers.image}}`}}"
-            operator: NotEquals
-            value: "{{$excludeRegistry}}"
-          {{- end }}
       match:
         any:
           - resources:
@@ -43,6 +36,13 @@ spec:
       mutate:
         foreach:
           - list: "request.object.spec.containers"
+            preconditions:
+              all:
+                {{- range $excludeRegistry := .excludeRegistries}}
+                - key: "{{`{{element.image}}`}}"
+                  operator: NotEquals
+                  value: "{{$excludeRegistry}}"
+                {{- end }}
             patchStrategicMerge:
               spec:
                 containers:
@@ -62,6 +62,13 @@ spec:
       mutate:
         foreach:
           - list: "request.object.spec.initContainers"
+            preconditions:
+              all:
+                {{- range $excludeRegistry := .excludeRegistries}}
+                - key: "{{`{{element.image}}`}}"
+                  operator: NotEquals
+                  value: "{{$excludeRegistry}}"
+                {{- end }}
             patchStrategicMerge:
               spec:
                 initContainers:
