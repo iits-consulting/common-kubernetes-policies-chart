@@ -40,7 +40,7 @@ customPolicies:
     # the target repository the trailing / is mandatory
     target: "mysecure-registry/common-signed-docker-images/"
 
-    validationFailureAction: "enforce"
+    validationFailureAction: "audit"
 
     #excludes images from the replacement wildcard * is supported
     excludeRegistries:
