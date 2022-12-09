@@ -28,6 +28,13 @@ spec:
   validationFailureAction: {{.validationFailureAction}}
   rules:
     - name: {{ .name }}
+      preconditions:
+        all:
+          {{- range $excludeRegistry := .excludeRegistries}}
+          - key: "{{`{{request.object.spec.template.spec.containers.image}}`}}"
+            operator: NotEquals
+            value: "{{$excludeRegistry}}"
+          {{- end }}
       match:
         any:
           - resources:
