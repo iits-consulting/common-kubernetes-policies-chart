@@ -15,6 +15,13 @@ helm search repo $CHART_NAME
 helm install $CHART_NAME $CHART_REPO_NAME/$CHART_NAME
 ```
 
+## Running tests
+
+To quickly check if it works as intended run the tests. This requires the kyverno binary.
+
+```shell
+kyverno test test
+```
 ## Acceptance criteria
 
 Any helm chart provided by iits-consulting needs to adhere to the following acceptance criteria:

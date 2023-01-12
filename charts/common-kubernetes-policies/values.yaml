@@ -78,6 +78,12 @@ customPolicies:
     #
     # The image has to be a fully qualified path to the image(s).
     # You need to prepend always the registry.
+    #
+    # GOOD: This will work docker.io/iits/*
+    # BAD: This will not work iits/*
+    #
+    # The same needs to be done for a gitlab registry, for the GitHub container registry etc.
+    #
     # The image(s) will be verified with the given public key.
     #
     # Wildcards are supported.
