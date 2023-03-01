@@ -16,6 +16,7 @@ dependencies:
   - name: "policy-reporter"
     repository: "https://kyverno.github.io/policy-reporter"
     version: 2.13.5
+
 # A chart can be either an 'application' or a 'library' chart.
 #
 # Application charts are a collection of templates that can be packaged into versioned archives
