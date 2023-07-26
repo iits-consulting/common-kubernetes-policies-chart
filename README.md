@@ -1,3 +1,7 @@
+# Deprecated
+
+We switched over to here: https://github.com/iits-consulting/charts/tree/main/charts/iits-kyverno-policies
+
 # Common Kubernetes Policies
 
 This chart contains useful policies for you kubernetes cluster.
